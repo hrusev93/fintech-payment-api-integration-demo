@@ -27,7 +27,7 @@ The simulated platform supports both Fiat and Crypto transaction flows.
 
 ## Integration Flow
 
-```text
+~~~text
 Corporate Client
        |
        v
@@ -50,7 +50,11 @@ Webhook Notification
        |
        v
 Transaction Status
-Fiat Payment Flow
+~~~
+
+## Fiat Payment Flow
+
+~~~text
 Client
   |
   | OAuth Authentication
@@ -71,7 +75,11 @@ Webhook
   |
   v
 Completed
-Crypto Transaction Flow
+~~~
+
+## Crypto Transaction Flow
+
+~~~text
 Client
   |
   | Authentication
@@ -88,28 +96,33 @@ Webhook
   |
   v
 Confirmed
-Error Handling
+~~~
+
+## Error Handling
 
 The project also demonstrates common API integration scenarios, including:
 
-Invalid authentication
-Missing required fields
-Invalid beneficiary details
-Invalid payment amount
-Unsupported currency
-Duplicate requests
-Invalid transaction state
-Tools & Technologies
-REST APIs
-JSON
-Postman
-OAuth 2.0
-Webhooks
-OpenAPI
-GitHub
-SQL concepts
-API documentation
-Purpose
+- Invalid authentication
+- Missing required fields
+- Invalid beneficiary details
+- Invalid payment amount
+- Unsupported currency
+- Duplicate requests
+- Invalid transaction state
+
+## Tools & Technologies
+
+- REST APIs
+- JSON
+- Postman
+- OAuth 2.0
+- Webhooks
+- OpenAPI
+- GitHub
+- SQL concepts
+- API documentation
+
+## Purpose
 
 This project was created as a technical portfolio project to demonstrate practical knowledge of API integrations, fintech payment workflows, API testing, documentation, and client integration processes.
 
