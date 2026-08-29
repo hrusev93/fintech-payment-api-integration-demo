@@ -51,3 +51,48 @@ Webhook Notification
        v
 Transaction Status
 
+
+Fiat Payment Flow
+
+Client
+  |
+  | OAuth Authentication
+  v
+API
+  |
+  | Create Beneficiary
+  v
+Beneficiary
+  |
+  | Initiate Payment
+  v
+Payment
+  |
+  | Processing
+  v
+Webhook
+  |
+  v
+Completed
+
+
+Crypto Transaction Flow
+
+Client
+  |
+  | Authentication
+  v
+Crypto API
+  |
+  | Create Transaction
+  v
+Pending
+  |
+  | Blockchain Confirmation
+  v
+Webhook
+  |
+  v
+Confirmed
+
+
