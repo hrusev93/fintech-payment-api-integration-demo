@@ -185,6 +185,14 @@ paths:
       operationId: initiatePayment
       security:
         - bearerAuth: []
+         parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          description: Unique key used to prevent duplicate payment creation when the same request is retried.
+          schema:
+            type: string
+            example: payment-demo-123456
       requestBody:
         required: true
         content:
