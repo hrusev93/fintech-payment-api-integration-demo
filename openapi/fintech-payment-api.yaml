@@ -5,6 +5,11 @@ info:
   description: |
     A fictional API demonstrating an end-to-end fintech payment
     integration for portfolio and educational purposes.
+
+    The API demonstrates authentication, account management,
+    beneficiary management, fiat payments, crypto transactions,
+    wallet whitelisting, idempotency, transaction status tracking,
+    and webhook event flows.
   version: 1.0.0
 
 servers:
@@ -18,6 +23,7 @@ tags:
   - name: Payments
   - name: Transactions
   - name: Crypto
+  - name: Webhooks
 
 paths:
 
@@ -61,7 +67,7 @@ paths:
     post:
       tags:
         - Accounts
-      summary: Create account
+      summary: Create fiat account
       operationId: createAccount
       security:
         - bearerAuth: []
@@ -89,47 +95,6 @@ paths:
 
         "400":
           description: Invalid account request
-
-        "401":
-          description: Unauthorized
-
-  /crypto/accounts:
-    post:
-      tags:
-        - Crypto
-      summary: Create crypto account
-      operationId: createCryptoAccount
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - asset
-                - network
-              properties:
-                asset:
-                  type: string
-                  example: USDC
-                network:
-                  type: string
-                  example: Ethereum
-      responses:
-        "201":
-          description: Crypto account created
-          content:
-            application/json:
-              example:
-                account_id: crypto_acc_123456
-                asset: USDC
-                network: Ethereum
-                status: ACTIVE
-
-        "400":
-          description: Invalid crypto account request
 
         "401":
           description: Unauthorized
@@ -181,15 +146,17 @@ paths:
     post:
       tags:
         - Payments
-      summary: Initiate payment
+      summary: Initiate fiat payment
       operationId: initiatePayment
       security:
         - bearerAuth: []
-         parameters:
+      parameters:
         - name: Idempotency-Key
           in: header
           required: true
-          description: Unique key used to prevent duplicate payment creation when the same request is retried.
+          description: |
+            Unique key used to prevent duplicate payment creation
+            when the same request is retried.
           schema:
             type: string
             example: payment-demo-123456
@@ -238,6 +205,9 @@ paths:
         "401":
           description: Unauthorized
 
+        "409":
+          description: Duplicate or conflicting idempotency key
+
   /payments/{paymentId}:
     get:
       tags:
@@ -269,6 +239,47 @@ paths:
 
         "404":
           description: Payment not found
+
+  /crypto/accounts:
+    post:
+      tags:
+        - Crypto
+      summary: Create crypto account
+      operationId: createCryptoAccount
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - asset
+                - network
+              properties:
+                asset:
+                  type: string
+                  example: USDC
+                network:
+                  type: string
+                  example: Ethereum
+      responses:
+        "201":
+          description: Crypto account created
+          content:
+            application/json:
+              example:
+                account_id: crypto_acc_123456
+                asset: USDC
+                network: Ethereum
+                status: ACTIVE
+
+        "400":
+          description: Invalid crypto account request
+
+        "401":
+          description: Unauthorized
 
   /crypto/wallets/whitelist:
     post:
@@ -323,38 +334,6 @@ paths:
           description: Unauthorized
 
   /crypto/transactions:
-    /crypto/transactions/{transactionId}:
-    get:
-      tags:
-        - Crypto
-      summary: Get crypto transaction status
-      operationId: getCryptoTransactionStatus
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: transactionId
-          in: path
-          required: true
-          schema:
-            type: string
-          example: crypto_123456
-      responses:
-        "200":
-          description: Crypto transaction status
-          content:
-            application/json:
-              example:
-                transaction_id: crypto_123456
-                status: CONFIRMED
-                asset: USDC
-                network: Ethereum
-                amount: 500
-
-        "401":
-          description: Unauthorized
-
-        "404":
-          description: Crypto transaction not found
     post:
       tags:
         - Crypto
@@ -362,6 +341,16 @@ paths:
       operationId: createCryptoTransaction
       security:
         - bearerAuth: []
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          description: |
+            Unique key used to prevent duplicate crypto transaction
+            creation when the same request is retried.
+          schema:
+            type: string
+            example: crypto-demo-123456
       requestBody:
         required: true
         content:
@@ -409,15 +398,52 @@ paths:
         "401":
           description: Unauthorized
 
+        "409":
+          description: Duplicate or conflicting idempotency key
+
+  /crypto/transactions/{transactionId}:
+    get:
+      tags:
+        - Crypto
+      summary: Get crypto transaction status
+      operationId: getCryptoTransactionStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: crypto_123456
+      responses:
+        "200":
+          description: Crypto transaction status
+          content:
+            application/json:
+              example:
+                transaction_id: crypto_123456
+                status: CONFIRMED
+                asset: USDC
+                network: Ethereum
+                amount: 500
+
+        "401":
+          description: Unauthorized
+
+        "404":
+          description: Crypto transaction not found
+
   /webhooks/payment:
     post:
       tags:
-        - Transactions
-      summary: Payment status webhook
+        - Webhooks
+      summary: Payment status webhook example
       operationId: paymentStatusWebhook
       description: |
-        Example webhook sent to the client application when
-        the payment status changes.
+        Example webhook payload representing a payment status
+        event delivered from the fintech platform to a client
+        application.
       requestBody:
         required: true
         content:
@@ -446,16 +472,17 @@ paths:
       responses:
         "200":
           description: Webhook received successfully
-          
+
   /webhooks/crypto:
     post:
       tags:
-        - Transactions
-      summary: Crypto transaction status webhook
+        - Webhooks
+      summary: Crypto transaction webhook example
       operationId: cryptoTransactionStatusWebhook
       description: |
-        Example webhook sent to the client application when
-        the status of a crypto transaction changes.
+        Example webhook payload representing a crypto transaction
+        status event delivered from the fintech platform to a
+        client application.
       requestBody:
         required: true
         content:
