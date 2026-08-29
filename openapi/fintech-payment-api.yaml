@@ -1,229 +1,295 @@
 openapi: 3.0.3
 
 info:
-  title: Fintech Payment API
-  description: |
-    A fictional API demonstrating an end-to-end fintech payment
-    integration for portfolio and educational purposes.
-  version: 1.0.0
+   title: Fintech Payment API
+   description: |
+      A fictional API demonstrating an end-to-end fintech payment
+      integration for portfolio and educational purposes.
+   version: 1.0.0
 
 servers:
-  - url: https://api.example-fintech.com
-    description: Fictional Sandbox Environment
+   - url: https://api.example-fintech.com
+     description: Fictional Sandbox Environment
 
 tags:
-  - name: Authentication
-  - name: Accounts
-  - name: Beneficiaries
-  - name: Payments
-  - name: Transactions
-  - name: Crypto
+   - name: Authentication
+   - name: Accounts
+   - name: Beneficiaries
+   - name: Payments
+   - name: Transactions
+   - name: Crypto
 
 paths:
+   /oauth/token:
+      post:
+         tags:
+            - Authentication
+         summary: Obtain access token
+         operationId: obtainAccessToken
+         description: Authenticate the client and obtain an OAuth access token.
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     required:
+                        - client_id
+                        - client_secret
+                     properties:
+                        client_id:
+                           type: string
+                           example: demo_client
+                        client_secret:
+                           type: string
+                           example: demo_secret
+         responses:
+            "200":
+               description: Authentication successful
+               content:
+                  application/json:
+                     example:
+                        access_token: demo_access_token
+                        token_type: Bearer
+                        expires_in: 3600
 
-  /oauth/token:
-    post:
-      tags:
-        - Authentication
-      summary: Obtain access token
-      description: Authenticate the client and obtain an OAuth access token.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - client_id
-                - client_secret
-              properties:
-                client_id:
-                  type: string
-                  example: demo_client
-                client_secret:
-                  type: string
-                  example: demo_secret
-      responses:
-        '200':
-          description: Authentication successful
-          content:
-            application/json:
-              example:
-                access_token: demo_access_token
-                token_type: Bearer
-                expires_in: 3600
+            "401":
+               description: Invalid credentials
 
-        '401':
-          description: Invalid credentials
+   /accounts:
+      post:
+         tags:
+            - Accounts
+         summary: Create account
+         operationId: createAccount
+         security:
+            - bearerAuth: []
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     required:
+                        - currency
+                     properties:
+                        currency:
+                           type: string
+                           example: EUR
+         responses:
+            "201":
+               description: Account created
+               content:
+                  application/json:
+                     example:
+                        account_id: acc_123456
+                        currency: EUR
+                        status: ACTIVE
 
-  /accounts:
-    post:
-      tags:
-        - Accounts
-      summary: Create account
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - currency
-              properties:
-                currency:
-                  type: string
-                  example: EUR
-      responses:
-        '201':
-          description: Account created
-          content:
-            application/json:
-              example:
-                account_id: acc_123456
-                currency: EUR
-                status: ACTIVE
+   /beneficiaries:
+      post:
+         tags:
+            - Beneficiaries
+         summary: Create beneficiary
+         operationId: createBeneficiary
+         security:
+            - bearerAuth: []
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     required:
+                        - name
+                        - currency
+                        - iban
+                     properties:
+                        name:
+                           type: string
+                           example: Demo Merchant
+                        currency:
+                           type: string
+                           example: EUR
+                        iban:
+                           type: string
+                           example: DE89370400440532013000
+         responses:
+            "201":
+               description: Beneficiary created
+               content:
+                  application/json:
+                     example:
+                        beneficiary_id: ben_123456
+                        status: ACTIVE
 
-  /beneficiaries:
-    post:
-      tags:
-        - Beneficiaries
-      summary: Create beneficiary
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            example:
-              name: Demo Merchant
-              currency: EUR
-              iban: DE89370400440532013000
-      responses:
-        '201':
-          description: Beneficiary created
-          content:
-            application/json:
-              example:
-                beneficiary_id: ben_123456
-                status: ACTIVE
+   /payments:
+      post:
+         tags:
+            - Payments
+         summary: Initiate payment
+         operationId: initiatePayment
+         security:
+            - bearerAuth: []
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     required:
+                        - account_id
+                        - beneficiary_id
+                        - amount
+                        - currency
+                     properties:
+                        account_id:
+                           type: string
+                           example: acc_123456
+                        beneficiary_id:
+                           type: string
+                           example: ben_123456
+                        amount:
+                           type: number
+                           format: double
+                           example: 2500.00
+                        currency:
+                           type: string
+                           example: EUR
+                        reference:
+                           type: string
+                           example: Invoice-1001
+         responses:
+            "201":
+               description: Payment created
+               content:
+                  application/json:
+                     example:
+                        payment_id: pay_123456
+                        status: PENDING
+                        amount: 2500.00
+                        currency: EUR
 
-  /payments:
-    post:
-      tags:
-        - Payments
-      summary: Initiate payment
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            example:
-              account_id: acc_123456
-              beneficiary_id: ben_123456
-              amount: 2500.00
-              currency: EUR
-              reference: Invoice-1001
-      responses:
-        '201':
-          description: Payment created
-          content:
-            application/json:
-              example:
-                payment_id: pay_123456
-                status: PENDING
-                amount: 2500.00
-                currency: EUR
+            "400":
+               description: Invalid payment request
 
-        '400':
-          description: Invalid payment request
+            "401":
+               description: Unauthorized
 
-        '401':
-          description: Unauthorized
+   /payments/{paymentId}:
+      get:
+         tags:
+            - Transactions
+         summary: Get payment status
+         operationId: getPaymentStatus
+         security:
+            - bearerAuth: []
+         parameters:
+            - name: paymentId
+              in: path
+              required: true
+              schema:
+                 type: string
+              example: pay_123456
+         responses:
+            "200":
+               description: Payment status
+               content:
+                  application/json:
+                     example:
+                        payment_id: pay_123456
+                        status: COMPLETED
+                        amount: 2500.00
+                        currency: EUR
 
-  /payments/{paymentId}:
-    get:
-      tags:
-        - Transactions
-      summary: Get payment status
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: paymentId
-          in: path
-          required: true
-          schema:
-            type: string
-          example: pay_123456
-      responses:
-        '200':
-          description: Payment status
-          content:
-            application/json:
-              example:
-                payment_id: pay_123456
-                status: COMPLETED
-                amount: 2500.00
-                currency: EUR
+            "404":
+               description: Payment not found
 
-        '404':
-          description: Payment not found
+   /crypto/transactions:
+      post:
+         tags:
+            - Crypto
+         summary: Create crypto transaction
+         operationId: createCryptoTransaction
+         security:
+            - bearerAuth: []
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     required:
+                        - asset
+                        - network
+                        - amount
+                        - destination_address
+                     properties:
+                        asset:
+                           type: string
+                           example: USDC
+                        network:
+                           type: string
+                           example: Ethereum
+                        amount:
+                           type: number
+                           format: double
+                           example: 500
+                        destination_address:
+                           type: string
+                           example: "0xDemoWalletAddress"
+         responses:
+            "201":
+               description: Crypto transaction created
+               content:
+                  application/json:
+                     example:
+                        transaction_id: crypto_123456
+                        status: PENDING
+                        asset: USDC
+                        network: Ethereum
 
-  /crypto/transactions:
-    post:
-      tags:
-        - Crypto
-      summary: Create crypto transaction
-      security:
-        - bearerAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            example:
-              asset: USDC
-              network: Ethereum
-              amount: 500
-              destination_address: "0xDemoWalletAddress"
-      responses:
-        '201':
-          description: Crypto transaction created
-          content:
-            application/json:
-              example:
-                transaction_id: crypto_123456
-                status: PENDING
-                asset: USDC
-                network: Ethereum
-
-  /webhooks/payment:
-    post:
-      tags:
-        - Transactions
-      summary: Payment status webhook
-      description: |
-        Example webhook sent to the client application when
-        the payment status changes.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            example:
-              event: payment.status_changed
-              payment_id: pay_123456
-              status: COMPLETED
-              timestamp: "2026-08-29T12:00:00Z"
-      responses:
-        '200':
-          description: Webhook received successfully
+   /webhooks/payment:
+      post:
+         tags:
+            - Transactions
+         summary: Payment status webhook
+         operationId: paymentStatusWebhook
+         description: |
+            Example webhook sent to the client application when
+            the payment status changes.
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     required:
+                        - event
+                        - payment_id
+                        - status
+                        - timestamp
+                     properties:
+                        event:
+                           type: string
+                           example: payment.status_changed
+                        payment_id:
+                           type: string
+                           example: pay_123456
+                        status:
+                           type: string
+                           example: COMPLETED
+                        timestamp:
+                           type: string
+                           format: date-time
+                           example: "2026-08-29T12:00:00Z"
+         responses:
+            "200":
+               description: Webhook received successfully
 
 components:
-
-  securitySchemes:
-
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
+   securitySchemes:
+      bearerAuth:
+         type: http
+         scheme: bearer
+         bearerFormat: JWT
