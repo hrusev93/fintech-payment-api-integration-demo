@@ -1,16 +1,1 @@
-Client
-  |
-  | Authentication
-  v
-Crypto API
-  |
-  | Create Transaction
-  v
-Pending
-  |
-  | Blockchain Confirmation
-  v
-Webhook
-  |
-  v
-Confirmed
+
