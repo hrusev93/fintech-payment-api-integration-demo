@@ -323,6 +323,38 @@ paths:
           description: Unauthorized
 
   /crypto/transactions:
+    /crypto/transactions/{transactionId}:
+    get:
+      tags:
+        - Crypto
+      summary: Get crypto transaction status
+      operationId: getCryptoTransactionStatus
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: transactionId
+          in: path
+          required: true
+          schema:
+            type: string
+          example: crypto_123456
+      responses:
+        "200":
+          description: Crypto transaction status
+          content:
+            application/json:
+              example:
+                transaction_id: crypto_123456
+                status: CONFIRMED
+                asset: USDC
+                network: Ethereum
+                amount: 500
+
+        "401":
+          description: Unauthorized
+
+        "404":
+          description: Crypto transaction not found
     post:
       tags:
         - Crypto
