@@ -1,0 +1,20 @@
+Client
+  |
+  | OAuth Authentication
+  v
+API
+  |
+  | Create Beneficiary
+  v
+Beneficiary
+  |
+  | Initiate Payment
+  v
+Payment
+  |
+  | Processing
+  v
+Webhook
+  |
+  v
+Completed
