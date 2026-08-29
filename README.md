@@ -50,5 +50,67 @@ Webhook Notification
        |
        v
 Transaction Status
+Fiat Payment Flow
+Client
+  |
+  | OAuth Authentication
+  v
+API
+  |
+  | Create Beneficiary
+  v
+Beneficiary
+  |
+  | Initiate Payment
+  v
+Payment
+  |
+  | Processing
+  v
+Webhook
+  |
+  v
+Completed
+Crypto Transaction Flow
+Client
+  |
+  | Authentication
+  v
+Crypto API
+  |
+  | Create Transaction
+  v
+Pending
+  |
+  | Blockchain Confirmation
+  v
+Webhook
+  |
+  v
+Confirmed
+Error Handling
 
+The project also demonstrates common API integration scenarios, including:
 
+Invalid authentication
+Missing required fields
+Invalid beneficiary details
+Invalid payment amount
+Unsupported currency
+Duplicate requests
+Invalid transaction state
+Tools & Technologies
+REST APIs
+JSON
+Postman
+OAuth 2.0
+Webhooks
+OpenAPI
+GitHub
+SQL concepts
+API documentation
+Purpose
+
+This project was created as a technical portfolio project to demonstrate practical knowledge of API integrations, fintech payment workflows, API testing, documentation, and client integration processes.
+
+All APIs, transactions, accounts, and data used in this project are fictional and created for demonstration purposes only.
