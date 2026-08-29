@@ -446,6 +446,52 @@ paths:
       responses:
         "200":
           description: Webhook received successfully
+          
+  /webhooks/crypto:
+    post:
+      tags:
+        - Transactions
+      summary: Crypto transaction status webhook
+      operationId: cryptoTransactionStatusWebhook
+      description: |
+        Example webhook sent to the client application when
+        the status of a crypto transaction changes.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - event
+                - transaction_id
+                - status
+                - asset
+                - network
+                - timestamp
+              properties:
+                event:
+                  type: string
+                  example: crypto.transaction.status_changed
+                transaction_id:
+                  type: string
+                  example: crypto_123456
+                status:
+                  type: string
+                  example: CONFIRMED
+                asset:
+                  type: string
+                  example: USDC
+                network:
+                  type: string
+                  example: Ethereum
+                timestamp:
+                  type: string
+                  format: date-time
+                  example: "2026-08-29T12:00:00Z"
+      responses:
+        "200":
+          description: Webhook received successfully
 
 components:
 
