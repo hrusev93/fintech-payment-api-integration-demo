@@ -86,7 +86,15 @@ Client
   v
 Crypto API
   |
-  | Create Transaction
+  | Create / Access Crypto Account
+  v
+Crypto Account
+  |
+  | Add / Whitelist Destination Wallet
+  v
+Whitelisted Wallet
+  |
+  | Create Crypto Transaction
   v
 Pending
   |
