@@ -194,3 +194,14 @@ The API, endpoints, data, workflows, examples, and documentation are fictional a
 ## License
 
 This project is licensed under the MIT License.
+
+## How to Test
+
+1. Import the Postman collection.
+2. Configure the Postman Mock Server URL.
+3. Send the authentication request.
+4. Run the Fiat or Crypto workflow.
+5. Review the mock responses.
+6. Review the automated test results.
+
+No backend installation is required.
