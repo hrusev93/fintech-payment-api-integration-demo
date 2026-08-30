@@ -1,0 +1,1708 @@
+{
+  "info": {
+    "_postman_id": "23c48646-f14d-4dd7-8e8c-5d6f43a10377",
+    "name": "Fintech Payment API Integration Demo",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57812537"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Obtain Access Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Access token exists\", function () {\r\n    pm.expect(response.access_token).to.exist;\r\n});\r\n\r\npm.test(\"Token type is Bearer\", function () {\r\n    pm.expect(response.token_type).to.eql(\"Bearer\");\r\n});\r\n\r\npm.test(\"Token expiration is defined\", function () {\r\n    pm.expect(response.expires_in).to.exist;\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "client_id",
+                  "value": "demo_client"
+                },
+                {
+                  "key": "client_secret",
+                  "value": "demo_secret"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/oauth/token",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "oauth",
+                "token"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Obtain Access Token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "urlencoded",
+                  "urlencoded": [
+                    {
+                      "key": "client_id",
+                      "value": "demo_client"
+                    },
+                    {
+                      "key": "client_secret",
+                      "value": "demo_secret"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/oauth/token",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "oauth",
+                    "token"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 30 Aug 2026 10:07:23 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=b904a9dc2a03fbe9"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=decfa2f50d6f67e2"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "118"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788035320"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=S7ZgcmCOmGs.skK09UibhlbSsWsgI5QybmXmxnjLRYQ-1788084435.5992079-1.0.1.1-ENbwof2fuFFbEi0BMHhCFFy3UvqoerzfMv6j.s39rhvO1QZF6lXSTDgr7wj4xGencQVR57BvqGVVffs9nBtYeJE2a.BGNMTbryuWUHQOVvpu4zpV0gLUmjvPMCfjOfZA; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sun, 30 Aug 2026 10:37:23 GMT"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a332fcca7a3e8ef3-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"access_token\": \"demo_access_token\",\r\n  \"token_type\": \"Bearer\",\r\n  \"expires_in\": 3600\r\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Fiat",
+      "item": [
+        {
+          "name": "Create EUR Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"currency\": \"EUR\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/accounts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Create EUR Account",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"currency\": \"EUR\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/accounts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "accounts"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 30 Aug 2026 10:03:04 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=7f009093b3ff31a9"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=49cc1b1dd3dbd3c4"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "116"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788035383"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=u5nQxN2ipdZRFXeBzhZmVqQlJIO6TnQ3u7m5z5P_Q0U-1788084184.4736106-1.0.1.1-n41YDD6Ujqj9vxLNr.RRiHOxusz3rMNI4qJZazv5Kx8l1I3Lq2GZmxjefbiCoM6d23hUufz3zYRoXo.SOHeurmZkvkPjLy1qugyTVQKDhnXFmwVWfUqJAo9Cg1x3JmqL; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sun, 30 Aug 2026 10:33:04 GMT"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a332f6a8fe98f937-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"account_id\": \"acc_123456\",\r\n  \"currency\": \"EUR\",\r\n  \"status\": \"ACTIVE\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Beneficiary",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Beneficiary ID exists\", function () {\r\n    pm.expect(response.beneficiary_id).to.exist;\r\n});\r\n\r\npm.test(\"Beneficiary is active\", function () {\r\n    pm.expect(response.status).to.eql(\"ACTIVE\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Demo Merchant\",\r\n  \"currency\": \"EUR\",\r\n  \"iban\": \"DE89370400440532013000\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/beneficiaries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "beneficiaries"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Create Beneficiary",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"name\": \"Demo Merchant\",\r\n  \"currency\": \"EUR\",\r\n  \"iban\": \"DE89370400440532013000\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/beneficiaries",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "beneficiaries"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 30 Aug 2026 10:14:32 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=0542acacdc6b4533"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=6904661515cf9554"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "119"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788084898"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=0ys2amT.cvrDZlY6Ziq3HCOVXHxUicShB7khuV7ypSQ-1788084872.262078-1.0.1.1-DP8OQoizJkWRvHhXImx4nASwA0wq9qx_p.TCjZAIHI7VAlZnJmlyMtEtb3Rp_wPf46OzB47Nxre_Ig90F_8Fen8Qt9g.84JzuNi5CkHZAdXMMZoUr.lkzajjVRjJFThy; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sun, 30 Aug 2026 10:44:32 GMT"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a3330773afe9850d-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"beneficiary_id\": \"ben_123456\",\r\n  \"status\": \"ACTIVE\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Initiate EUR Payment",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Payment ID exists\", function () {\r\n    pm.expect(response.payment_id).to.exist;\r\n});\r\n\r\npm.test(\"Payment status is PENDING\", function () {\r\n    pm.expect(response.status).to.eql(\"PENDING\");\r\n});\r\n\r\npm.test(\"Payment amount is correct\", function () {\r\n    pm.expect(response.amount).to.eql(2500);\r\n});\r\n\r\npm.test(\"Payment currency is EUR\", function () {\r\n    pm.expect(response.currency).to.eql(\"EUR\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotencyKey}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"account_id\": \"{{accountId}}\",\r\n  \"beneficiary_id\": \"{{beneficiaryId}}\",\r\n  \"amount\": 2500.00,\r\n  \"currency\": \"EUR\",\r\n  \"reference\": \"Invoice-1001\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/payments",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Initiate EUR Payment",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{idempotencyKey}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"account_id\": \"{{accountId}}\",\r\n  \"beneficiary_id\": \"{{beneficiaryId}}\",\r\n  \"amount\": 2500.00,\r\n  \"currency\": \"EUR\",\r\n  \"reference\": \"Invoice-1001\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/payments",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "payments"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 29 Aug 2026 20:22:00 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=1c1f12a93ef014ae"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=16648bab411f1241"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "119"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788034980"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"10f-iQ/6cTHOHhQG6g/jbUGqClHk7Zg\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=_endovhdvSBT4KDNshFbA0_LEv7AvSqss7Jm7h5Qa4k-1788034920.2919955-1.0.1.1-0G3AwLk2NWBeKW.QGcIHXv_UPq_iCQ0LQpTepXEY4pzRtE5JYj_G7ln1zBu9xQd923APTG82UJC5O6GQmdFL.D_TD_ehLPKIc5bFzAubuPU57_Pqo4K58tGLt0miBdFI; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sat, 29 Aug 2026 20:52:00 GMT"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a32e43ebda8dd100-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"payment_id\": \"pay_123456\",\n  \"status\": \"PENDING\",\n  \"amount\": 2500.00,\n  \"currency\": \"EUR\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Payment Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Payment ID exists\", function () {\r\n    pm.expect(response.payment_id).to.exist;\r\n});\r\n\r\npm.test(\"Payment is completed\", function () {\r\n    pm.expect(response.status).to.eql(\"COMPLETED\");\r\n});\r\n\r\npm.test(\"Payment currency is EUR\", function () {\r\n    pm.expect(response.currency).to.eql(\"EUR\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/payments/{{paymentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "payments",
+                "{{paymentId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Payment Status",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/payments/pay_123456",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "payments",
+                    "pay_123456"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 30 Aug 2026 09:30:20 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=b2974391f45373f1"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=e1f662504f909c99"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "119"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788082280"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=1vk4LDU_bGAuJL6kbsUUDz6IRjwfhHsLGrHENi.Vc4I-1788082220.1964602-1.0.1.1-9lTZE2mRufUw92o_VjFRz4scOH7NJVAuaEcuOONv.tkpwezft2x9ZWO0pVVJg9h3Mzidb9moZPTED8CFTILbEzNSGgBKCGrIHb.Xh3NbzVEgSU8ATx3ucI.lxKLGZPsj; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sun, 30 Aug 2026 10:00:20 GMT"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a332c6b43a4872df-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"payment_id\": \"pay_123456\",\n  \"status\": \"COMPLETED\",\n  \"amount\": 2500.00,\n  \"currency\": \"EUR\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Crypto",
+      "item": [
+        {
+          "name": "Create Crypto Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Crypto account ID exists\", function () {\r\n    pm.expect(response.account_id).to.exist;\r\n});\r\n\r\npm.test(\"Asset is USDC\", function () {\r\n    pm.expect(response.asset).to.eql(\"USDC\");\r\n});\r\n\r\npm.test(\"Network is Ethereum\", function () {\r\n    pm.expect(response.network).to.eql(\"Ethereum\");\r\n});\r\n\r\npm.test(\"Crypto account is active\", function () {\r\n    pm.expect(response.status).to.eql(\"ACTIVE\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/crypto/accounts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crypto",
+                "accounts"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Create Crypto Account",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/crypto/accounts",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "crypto",
+                    "accounts"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 29 Aug 2026 20:32:06 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=392ac0d09589d930"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=b9786218b80141ea"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "119"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788035586"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=6aZ4NMoBlJeZiPXLjyIjRGUKUl_gMG0vvvfsXtIwut0-1788035526.492808-1.0.1.1-2ZX4sC4pk8sNBnkZnnXKJVdSq7QC1RZ5he8pfY0UhzCvueawg8Bn0cDYx3nCJpkGXJvv3Hly1wgfXM7gC8tgUHWf0TSRY7Vic0VnXr1404ai5JsNaByP0WydojqeaCSG; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sat, 29 Aug 2026 21:02:06 GMT"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a32e52b89ca42bd8-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"account_id\": \"crypto_acc_123456\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\",\r\n  \"status\": \"ACTIVE\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Whitelist Destination Wallet",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Wallet ID exists\", function () {\r\n    pm.expect(response.wallet_id).to.exist;\r\n});\r\n\r\npm.test(\"Wallet is whitelisted\", function () {\r\n    pm.expect(response.status).to.eql(\"WHITELISTED\");\r\n});\r\n\r\npm.test(\"Asset is USDC\", function () {\r\n    pm.expect(response.asset).to.eql(\"USDC\");\r\n});\r\n\r\npm.test(\"Network is Ethereum\", function () {\r\n    pm.expect(response.network).to.eql(\"Ethereum\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"account_id\": \"{{cryptoAccountId}}\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\",\r\n  \"wallet_address\": \"0xDemoWalletAddress\",\r\n  \"label\": \"Treasury Wallet\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/crypto/wallets/whitelist",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crypto",
+                "wallets",
+                "whitelist"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Whitelist Destination Wallet",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"account_id\": \"{{cryptoAccountId}}\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\",\r\n  \"wallet_address\": \"0xDemoWalletAddress\",\r\n  \"label\": \"Treasury Wallet\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/crypto/wallets/whitelist",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "crypto",
+                    "wallets",
+                    "whitelist"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 29 Aug 2026 20:32:53 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=00c6c9d3fa3d9fe2"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=4d64014390207786"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "117"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788035586"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=_FOB2WFDpcX9Yc9RJrxPDI7PAs4XaVt5w9Hf_RAmbIs-1788035573.1395655-1.0.1.1-8stYyJSS0X6_qi8z9xjRMNg6MPpVRMMm9UqAVEEqoNampGCJ3QBgtWTaag5M1pRLnkm3FkisXcv.CjfFJ7xxqhdjbkNInPUjpc5erqdOmU3TDbKYMWTilPOXuIHGjYt6; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sat, 29 Aug 2026 21:02:53 GMT"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a32e53dc1d192bd8-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"wallet_id\": \"wallet_123456\",\r\n  \"status\": \"WHITELISTED\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Crypto Transaction",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {\r\n    pm.response.to.have.status(201);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Transaction ID exists\", function () {\r\n    pm.expect(response.transaction_id).to.exist;\r\n});\r\n\r\npm.test(\"Transaction status is PENDING\", function () {\r\n    pm.expect(response.status).to.eql(\"PENDING\");\r\n});\r\n\r\npm.test(\"Asset is USDC\", function () {\r\n    pm.expect(response.asset).to.eql(\"USDC\");\r\n});\r\n\r\npm.test(\"Network is Ethereum\", function () {\r\n    pm.expect(response.network).to.eql(\"Ethereum\");\r\n});\r\n\r\npm.test(\"Transaction amount is correct\", function () {\r\n    pm.expect(response.amount).to.eql(500);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"account_id\": \"{{cryptoAccountId}}\",\r\n  \"wallet_id\": \"{{walletId}}\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\",\r\n  \"amount\": 500\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/crypto/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crypto",
+                "transactions"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Create Crypto Transaction",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"account_id\": \"{{cryptoAccountId}}\",\r\n  \"wallet_id\": \"{{walletId}}\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\",\r\n  \"amount\": 500\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/crypto/transactions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "crypto",
+                    "transactions"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 29 Aug 2026 20:33:12 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=b5c58b885f81a9cb"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=735f26f0ff04674e"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "119"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788035651"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=zDJ3rsZlCSOPYlsNJOgY5T4GoGDzM5SZd_eq_VIcxxc-1788035591.7712893-1.0.1.1-VhKD3Aa2f_MECjaVEjxxhgCWS7ayTkNwkWwxUJW2OzdWYZq9DkmP8wOa9HhOe2kjm7Hk8wwqJj7We_2MU6qCJsVMKmIrmIaJM1mLq7u_AfGHTHVC_QF0nxigXU14owMQ; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sat, 29 Aug 2026 21:03:12 GMT"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a32e545099932bd8-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"transaction_id\": \"crypto_123456\",\r\n  \"status\": \"PENDING\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\",\r\n  \"amount\": 500\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Crypto Transaction Status",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Transaction ID exists\", function () {\r\n    pm.expect(response.transaction_id).to.exist;\r\n});\r\n\r\npm.test(\"Transaction is confirmed\", function () {\r\n    pm.expect(response.status).to.eql(\"CONFIRMED\");\r\n});\r\n\r\npm.test(\"Asset is USDC\", function () {\r\n    pm.expect(response.asset).to.eql(\"USDC\");\r\n});\r\n\r\npm.test(\"Network is Ethereum\", function () {\r\n    pm.expect(response.network).to.eql(\"Ethereum\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/crypto/transactions/{{cryptoTransactionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "crypto",
+                "transactions",
+                "{{cryptoTransactionId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Get Crypto Transaction Status",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/crypto/transactions/crypto_123456",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "crypto",
+                    "transactions",
+                    "crypto_123456"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sun, 30 Aug 2026 09:32:14 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=07382bc0c74c6364"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=997613027d3156df"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "119"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788082394"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=ODpiNGK_pCh51OOAlBGJsgCedXB13VV9jBr5z8sD5GI-1788082334.5308874-1.0.1.1-hfxkipYIvwz.xFP.63iAR0UE8gWUON4pM.362clgNO5OExncfxy7QBQ8EHcDz_QUmjdPQ0B0OycRFugASWsM4OEwHmBnQeXwPvRdTKsUKfpzur0fdkPpHJWSRnXKL_1Q; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sun, 30 Aug 2026 10:02:14 GMT"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a332c97ec933d0f2-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\n  \"transaction_id\": \"crypto_123456\",\n  \"status\": \"CONFIRMED\",\n  \"asset\": \"USDC\",\n  \"network\": \"Ethereum\",\n  \"amount\": 500\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Webhooks",
+      "item": [
+        {
+          "name": "Payment Status Webhook",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Webhook was received\", function () {\r\n    pm.expect(response.received).to.eql(true);\r\n});\r\n\r\npm.test(\"Webhook event is correct\", function () {\r\n    pm.expect(response.event).to.eql(\"payment.status_changed\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"event\": \"payment.status_changed\",\r\n  \"payment_id\": \"{{paymentId}}\",\r\n  \"status\": \"COMPLETED\",\r\n  \"timestamp\": \"2026-08-29T12:00:00Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/payment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "payment"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Payment Status Webhook",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"event\": \"payment.status_changed\",\r\n  \"payment_id\": \"{{paymentId}}\",\r\n  \"status\": \"COMPLETED\",\r\n  \"timestamp\": \"2026-08-29T12:00:00Z\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/webhooks/payment",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "webhooks",
+                    "payment"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 29 Aug 2026 20:34:19 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=ec3c25453267e402"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=ec5beb4508e7b17d"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "119"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788035719"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=Nyxg7l4QgOSrmHbEyocEyQzrH4Ydj6rClyaklyZNLsE-1788035659.0516462-1.0.1.1-ES.UqLwhx8c3VBK3S6d14g5Xj4Wl.MuT4i96mpV_WxAQKdu4XJE9RALkegjA09OpQrNIdguraE3DbtvoOEbauVYegkWc4ZlVST5pDmZ1ykXpBtOuCsL8g4lNpnbitjWN; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sat, 29 Aug 2026 21:04:19 GMT"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a32e55f518062bd8-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"received\": true,\r\n  \"event\": \"payment.status_changed\"\r\n}"
+            }
+          ]
+        },
+        {
+          "name": "Crypto Transaction Webhook",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.response.to.have.status(200);\r\n});\r\n\r\nconst response = pm.response.json();\r\n\r\npm.test(\"Webhook was received\", function () {\r\n    pm.expect(response.received).to.eql(true);\r\n});\r\n\r\npm.test(\"Webhook event is correct\", function () {\r\n    pm.expect(response.event).to.eql(\"crypto.transaction.status_changed\");\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"event\": \"crypto.transaction.status_changed\",\r\n  \"transaction_id\": \"{{cryptoTransactionId}}\",\r\n  \"status\": \"CONFIRMED\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\",\r\n  \"timestamp\": \"2026-08-29T12:00:00Z\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/webhooks/crypto",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "webhooks",
+                "crypto"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Crypto Transaction Webhook",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "{{accessToken}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"event\": \"crypto.transaction.status_changed\",\r\n  \"transaction_id\": \"{{cryptoTransactionId}}\",\r\n  \"status\": \"CONFIRMED\",\r\n  \"asset\": \"USDC\",\r\n  \"network\": \"Ethereum\",\r\n  \"timestamp\": \"2026-08-29T12:00:00Z\"\r\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/webhooks/crypto",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "webhooks",
+                    "crypto"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "text",
+              "header": [
+                {
+                  "key": "date",
+                  "value": "Sat, 29 Aug 2026 20:34:35 GMT"
+                },
+                {
+                  "key": "content-type",
+                  "value": "application/json; charset=utf-8"
+                },
+                {
+                  "key": "transfer-encoding",
+                  "value": "chunked"
+                },
+                {
+                  "key": "connection",
+                  "value": "keep-alive"
+                },
+                {
+                  "key": "x-srv-trace",
+                  "value": "v=1;t=3f9d1ae6caab8dfd"
+                },
+                {
+                  "key": "x-srv-span",
+                  "value": "v=1;s=e70cf8e5bb284db2"
+                },
+                {
+                  "key": "access-control-allow-origin",
+                  "value": "*"
+                },
+                {
+                  "key": "x-ratelimit-limit",
+                  "value": "120"
+                },
+                {
+                  "key": "x-ratelimit-remaining",
+                  "value": "117"
+                },
+                {
+                  "key": "x-ratelimit-reset",
+                  "value": "1788035719"
+                },
+                {
+                  "key": "etag",
+                  "value": "W/\"f3-HBiIyJWUHUWX/oPT7Emp7x0Nxms\""
+                },
+                {
+                  "key": "vary",
+                  "value": "Accept-Encoding"
+                },
+                {
+                  "key": "set-cookie",
+                  "value": "__cf_bm=cww1p7FKSFoKzB9Q1ZLK.vFI19_Z6jUOMxXNM5fuel8-1788035675.3667011-1.0.1.1-T3BCXaECuDeXZj7KcRSBhyXFiYvybUtyRvBnhsEqZ42mePHeldeNXu4gTtX8yqdtsqIAXF1Zhr2l2yKs9e7kK85H8x3GE3kOeuFkwX8hgnCotQbk3QxZXWPjctA0kEFA; HttpOnly; SameSite=None; Secure; Path=/; Domain=pstmn.io; Expires=Sat, 29 Aug 2026 21:04:35 GMT"
+                },
+                {
+                  "key": "cf-cache-status",
+                  "value": "DYNAMIC"
+                },
+                {
+                  "key": "content-encoding",
+                  "value": "gzip"
+                },
+                {
+                  "key": "server",
+                  "value": "cloudflare"
+                },
+                {
+                  "key": "cf-ray",
+                  "value": "a32e565b0a092bd8-SOF"
+                }
+              ],
+              "cookie": [],
+              "body": "{\r\n  \"received\": true,\r\n  \"event\": \"crypto.transaction.status_changed\"\r\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
